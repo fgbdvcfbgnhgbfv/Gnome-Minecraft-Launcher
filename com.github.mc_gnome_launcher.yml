@@ -1,0 +1,76 @@
+app-id: com.github.mc_gnome_launcher
+runtime: org.gnome.Platform
+runtime-version: '47'
+sdk: org.gnome.Sdk
+command: gnome-mc-launcher
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --share=ipc
+  - --socket=pulseaudio
+  - --share=network
+  - --filesystem=home
+  - --device=dri
+  # XDG portal для открытия папок/URL через gio open
+  - --talk-name=org.freedesktop.portal.Desktop
+  # FIX: needed for keyring (GNOME Secrets / libsecret) to store MS token
+  - --talk-name=org.freedesktop.secrets
+
+modules:
+  - name: python3-psutil
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-index --find-links=. --prefix=/app psutil
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/source/p/psutil/psutil-5.9.8.tar.gz
+        sha256: 6be126e3225486dff286a8fb9a06246a5253f4c7c53b475ea5f5ac934e64194c
+
+  - name: python3-aiohttp
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-index --find-links=. --prefix=/app aiohttp
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/source/a/aiohttp/aiohttp-3.9.5.tar.gz
+        sha256: edea7d15772ceeb29db4aff55e482d4bcfb6ae160ce144f2682de02f6d693551
+
+  - name: python3-keyring
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-index --find-links=. --prefix=/app keyring
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/source/k/keyring/keyring-25.2.1.tar.gz
+        sha256: 2458681cdb72d2cbe1b06c57de7e08f23a9cdddc601eca3328f863f4c3d1e00d
+
+  - name: python3-minecraft-launcher-lib
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-index --find-links=. --prefix=/app minecraft-launcher-lib
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/source/m/minecraft-launcher-lib/minecraft_launcher_lib-6.5.tar.gz
+        sha256: 2903fe423d9ca90027e9829d8dbc7573a7159364d74f149208a343619cacaa03
+
+  - name: gnome-mc-launcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 icon.png /app/share/icons/hicolor/256x256/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 com.github.mc_gnome_launcher.desktop /app/share/applications/com.github.mc_gnome_launcher.desktop
+      - mkdir -p /app/lib/gnome-mc-launcher
+      - cp -r main.py ui core utils patchouli_data.json /app/lib/gnome-mc-launcher/
+      # FIX: set PYTHONPATH so `from ui.main_window import ...` resolves correctly
+      - |
+        cat > /app/bin/gnome-mc-launcher << 'SCRIPT'
+        #!/bin/bash
+        export PYTHONPATH=/app/lib/gnome-mc-launcher:/app/lib/python3/dist-packages:$PYTHONPATH
+        cd /app/lib/gnome-mc-launcher
+        exec python3 main.py "$@"
+        SCRIPT
+      - chmod +x /app/bin/gnome-mc-launcher
+    sources:
+      - type: dir
+        path: .
+

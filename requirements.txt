@@ -1,0 +1,6 @@
+pygobject
+minecraft-launcher-lib
+psutil
+aiohttp
+keyring
+
