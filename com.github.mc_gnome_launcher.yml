@@ -1,0 +1,71 @@
+app-id: com.github.mc_gnome_launcher
+runtime: org.gnome.Platform
+runtime-version: "47"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk17
+command: gnome-mc-launcher
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --socket=pulseaudio
+  - --filesystem=xdg-data/gnome-mc-launcher:create
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.freedesktop.portal.Desktop
+  - --env=PATH=/app/bin:/usr/bin:/app/jre/bin
+  - --env=PYTHONPATH=/app/lib/python3.12/site-packages
+
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk17/install.sh
+
+  - name: python3-deps
+    buildsystem: simple
+    build-commands:
+      # Используем точку перед pip-sources, чтобы pip точно видел локальную папку
+      - pip3 install --prefix=/app --no-build-isolation --ignore-installed --no-index --find-links=./pip-sources minecraft-launcher-lib psutil keyring secretstorage aiohttp requests urllib3
+    sources:
+      - type: dir
+        path: pip-sources
+        dest: pip-sources
+
+  - name: gnome-mc-launcher
+    buildsystem: simple
+    build-commands:
+      - install -d /app/lib/launcher /app/bin
+      - cp -r . /app/lib/launcher/
+      
+      # Очистка
+      - rm -rf /app/lib/launcher/pip-sources
+      - rm -f /app/lib/launcher/com.github.mc_gnome_launcher.yml
+      
+      # Скрипт запуска
+      - |
+        cat > /app/bin/gnome-mc-launcher << 'EOF'
+        #!/bin/sh
+        export PYTHONPATH="/app/lib/python3.12/site-packages:/app/lib/launcher:${PYTHONPATH}"
+        exec python3 /app/lib/launcher/main.py "$@"
+        EOF
+      - chmod +x /app/bin/gnome-mc-launcher
+
+      # Иконки и десктоп-файл
+      - install -Dm644 fav/fav@16.png  /app/share/icons/hicolor/16x16/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 fav/fav@24.png  /app/share/icons/hicolor/24x24/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 fav/fav@32.png  /app/share/icons/hicolor/32x32/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 fav/fav@48.png  /app/share/icons/hicolor/48x48/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 fav/fav@64.png  /app/share/icons/hicolor/64x64/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 fav/fav@96.png  /app/share/icons/hicolor/96x96/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 fav/fav@128.png /app/share/icons/hicolor/128x128/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 fav/fav@256.png /app/share/icons/hicolor/256x256/apps/com.github.mc_gnome_launcher.png
+      - install -Dm644 com.github.mc_gnome_launcher.desktop /app/share/applications/com.github.mc_gnome_launcher.desktop
+      - install -Dm644 com.github.mc_gnome_launcher.metainfo.xml /app/share/metainfo/com.github.mc_gnome_launcher.metainfo.xml
+
+    sources:
+      - type: dir
+        path: .

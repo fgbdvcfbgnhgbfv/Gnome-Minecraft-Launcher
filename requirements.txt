@@ -1,0 +1,9 @@
+# Runtime dependencies installed via Flatpak manifest (pip3 into /app)
+# DO NOT install pygobject here — it ships with org.gnome.Platform runtime.
+minecraft-launcher-lib
+psutil
+keyring
+secretstorage
+aiohttp
+requests
+urllib3

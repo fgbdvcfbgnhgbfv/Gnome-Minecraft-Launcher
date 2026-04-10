@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.mc_gnome_launcher</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <name>Gnome Minecraft Launcher</name>
+  <summary>Minecraft Launcher for GNOME</summary>
+  <description>
+    <p>
+      A native Minecraft launcher built for the GNOME desktop. Supports multiple
+      game instances, Fabric, Forge, Quilt and NeoForge mod loaders, Modrinth mod
+      search and download, automatic Java management, and Microsoft account login.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Multiple game instances with independent mod folders</li>
+      <li>Fabric, Forge, Quilt and NeoForge loader installation</li>
+      <li>Modrinth mod search and one-click install with dependency resolution</li>
+      <li>Automatic Java download (Eclipse Temurin / Adoptium)</li>
+      <li>Microsoft account authentication</li>
+      <li>Resource packs, shader packs and world management</li>
+      <li>In-app game console and log viewer</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">com.github.mc_gnome_launcher.desktop</launchable>
+  <url type="homepage">https://github.com/fgbdvcfbgnhgbfv/Gnome-Minecraft-Launcher</url>
+  <url type="bugtracker">https://github.com/fgbdvcfbgnhgbfv/Gnome-Minecraft-Launcher/issues</url>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main launcher window</caption>
+    </screenshot>
+  </screenshots>
+  <provides>
+    <binary>gnome-mc-launcher</binary>
+  </provides>
+  <releases>
+    <release version="2.1.0" date="2026-04-10">
+      <description>
+        <p>Улучшена чёткость иконки: все размеры из fav/ теперь устанавливаются в hicolor-тему (16–256 px), GTK выбирает точный размер без апскейла.</p>
+      </description>
+    </release>
+    <release version="2.0.3" date="2026-04-10">
+      <description>
+        <p>Flatpak release with bug fixes and improved stability.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1">
+    <content_attribute id="social-chat">intense</content_attribute>
+  </content_rating>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">360</display_length>
+    <internet>always</internet>
+  </requires>
+</component>

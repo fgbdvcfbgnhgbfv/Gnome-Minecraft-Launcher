@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Gnome Minecraft Launcher
+Name[ru]=Gnome Minecraft Лаунчер
+Comment=Minecraft Launcher for GNOME
+Comment[ru]=Лаунчер Minecraft для GNOME
+Exec=gnome-mc-launcher
+Icon=com.github.mc_gnome_launcher
+Terminal=false
+Type=Application
+Categories=Game;
+Keywords=minecraft;launcher;game;
+StartupNotify=true
+StartupWMClass=com.github.mc_gnome_launcher
